@@ -1,0 +1,115 @@
+<div class="container" >
+  <div class="form-filter-container">
+    <div class="form-container">
+      <form [formGroup]="campaignForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required="">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Process Date</mat-label>
+          <input matInput formControlName="process_date" type="date" required="">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Process Hour</mat-label>
+          <input matInput formControlName="process_hour" type="time" required="">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="process_status" >
+            <mat-option [value]="1">Pending</mat-option>
+            <mat-option [value]="2">In Process</mat-option>
+            <mat-option [value]="3">Completed</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>User ID</mat-label>
+          <input matInput formControlName="userId" type="number" required="">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Phone List (comma-separated)</mat-label>
+          <textarea matInput formControlName="phone_list" required=""></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Message Text</mat-label>
+          <textarea matInput formControlName="message_text" required=""></textarea>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          {{ editing ? 'Update Campaign' : 'Add Campaign' }}
+        </button>
+        <button *ngIf="editing" mat-raised-button color="warn" type="button" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </form>
+    </div>
+
+    <div class="filter-container">
+      <mat-form-field>
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker" disabled="true">
+          <input matStartDate formControlName="start" placeholder="Start date" >
+          <input matEndDate formControlName="end" placeholder="End date">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker disabled="false"></mat-date-range-picker>
+        <!-- <mat-error *ngIf="dateRange.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error> -->
+        <!-- <mat-error *ngIf="dateRange.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error> -->
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="filterCampaigns()">Filter Campaigns</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="campaigns" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Id </th>
+        <td mat-cell *matCellDef="let campaign"> {{campaign.id}} </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let campaign"> {{campaign.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="process_date">
+        <th mat-header-cell *matHeaderCellDef> Process Date </th>
+        <td mat-cell *matCellDef="let campaign"> {{campaign.process_date}} </td>
+      </ng-container>
+      <ng-container matColumnDef="process_hour">
+        <th mat-header-cell *matHeaderCellDef> Process Hour </th>
+        <td mat-cell *matCellDef="let campaign"> {{campaign.process_hour}} </td>
+      </ng-container>
+      <ng-container matColumnDef="process_status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let campaign"  [ngClass]="{
+          'pending': campaign.process_status === 1,
+          'process': campaign.process_status === 2,
+          'completed': campaign.process_status === 3
+        }">
+          {{ campaign.process_status === 1 ? 'Pending' : campaign.process_status === 2 ? 'In Process' : 'Completed' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="message_text">
+        <th mat-header-cell *matHeaderCellDef> Message </th>
+        <td mat-cell *matCellDef="let campaign"> {{campaign.message_text}} </td>
+      </ng-container>
+    <ng-container matColumnDef="phone_list">
+        <th mat-header-cell *matHeaderCellDef> Phone List </th>
+        <td mat-cell *matCellDef="let campaign">
+          <ul>
+            <li *ngFor="let phone of campaign.phone_list">{{ phone }}</li>
+          </ul>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let campaign">
+          <button mat-button (click)="editCampaign(campaign)">Edit</button>
+          <button mat-button (click)="deleteCampaign(campaign.id)">Delete</button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

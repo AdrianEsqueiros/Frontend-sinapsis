@@ -1,0 +1,14 @@
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <p>Campaign ID: {{ data.campaignId }}</p>
+    <p>Phone: {{ data.phone }}</p>
+    <p>Text: {{ data.text }}</p>
+    <p>Process Date: {{ data.process_date }}</p>
+    <p>Process Hour: {{ data.process_hour }}</p>
+    <p>Shipping Status: {{ data.shipping_status }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="close()">Close</button>
+  </mat-card-actions>
+
+</mat-card>
